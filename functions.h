@@ -14,10 +14,6 @@ using std::cerr;
 using std::thread;
 using std::getline;
  
-struct nThread{	
-	int id;
-	thread threaty;
-};
 
 void setingVals(ifstream&,int&,int&,int&,int&,vector<int>&);
 ifstream rFile(string);

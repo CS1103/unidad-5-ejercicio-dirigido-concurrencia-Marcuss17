@@ -81,24 +81,20 @@ void printMatrix(vector<vector<int>> matrix){
 }
 
 void principal(int rows, int row2, vector<vector<int>>matrix1, vector<vector<int>>matrix2,vector<vector<int>>&matrix3){
-	vector<nThread> vt;
+	vector<thread> vt;
 	for(int i = 0; i < rows; i++){
-		nThread t;
-		t.id = i;
-		t.threaty(multiplica,t.id,row2,rows,matrix1,matrix2,std::ref(matrix3));
-		vt.push_back(t);
-	}
-	std::for_each(vt.begin(),vt.end(),[](std::thread & th){
-		vt.thready.join();
-	}
+		thread t;
+		vt.push_back(thread([&](){
+			for(int r = 0; r < row2; r++){
+				for(int j = 0; j < rows; j++){
+				matrix3[i][r]=matrix3[i][r]+matrix1[i][j]*matrix2[j][r];
+				}
+			}
+	}));
+	std::for_each(vt.begin(),vt.end(),[](thread & th){
+		th.join();
+	});
+}
 }
 
-void multiplica(int id, int row2, int rows, vector<vector<int>> matrix1, vector<vector<int>> matrix2, vector<vector<int>>& matrix3){
-	int i = id;
-	for(r = 0; r < row2;r++){
-		for(j = 0; j <rows; j++){
-			matrix3[i][r] = matrix3[i][r] + (matrix1[i][j]*matrix2[j][r]);
-		}
-	}
 
-}
