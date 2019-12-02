@@ -1,5 +1,6 @@
 #include "functions.h"
 
+
 void setingVals(ifstream& file, int& rows, int& row2, int& columns, int& columns2, vector<int>&numbers){
 	int countF = 0;	
 	char snum;	
@@ -82,19 +83,21 @@ void printMatrix(vector<vector<int>> matrix){
 
 void principal(int rows, int row2, vector<vector<int>>matrix1, vector<vector<int>>matrix2,vector<vector<int>>&matrix3){
 	vector<thread> vt;
-	for(int i = 0; i < rows; i++){
-		thread t;
-		vt.push_back(thread([&](){
-			for(int r = 0; r < row2; r++){
-				for(int j = 0; j < rows; j++){
-				matrix3[i][r]=matrix3[i][r]+matrix1[i][j]*matrix2[j][r];
-				}
-			}
-	}));
-	std::for_each(vt.begin(),vt.end(),[](thread & th){
-		th.join();
+	int sum = 0;
+	for(int i = 0; i < rows; i++) {
+        vt.push_back(thread([i,&sum,row2,matrix1,matrix2,&matrix3]() {
+            for (int r = 0; r < row2; r++) {
+                sum = 0;
+                for (int j = 0; j < row2; j++) {
+                    sum += matrix1[i][j] * matrix2[j][r];
+                }
+                matrix3[i][r] = sum;
+            }
+        }));
+    }
+	std::for_each(vt.begin(),vt.end(),[](thread & t){
+		t.join();
 	});
-}
 }
 
 
