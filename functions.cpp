@@ -2,47 +2,68 @@
 
 
 void setingVals(ifstream& file, int& rows, int& row2, int& columns, int& columns2, vector<int>&numbers){
-	int countF = 0;	
-	char snum;	
-	int number;
+	int countF = 0;
+	rows = 0; row2 = 0; columns =0; columns2 =0;
+	string snum;
+	int number = 0;
 	if(!file.is_open())
 		cerr << "Error al abrir el archivo\n";
 	else{
 		string line;
 		while(getline(file,line)){
-			auto it = find(line.begin(),line.end(),'F');
-			if(*it == 'F'){
-				if(countF == 0){
-					it++;
-					rows = (*it)-'0';
-					it = find(line.begin(),line.end(),'C');
-					it++;
-					columns = (*it)-'0';
-					countF++;			
-				}
-				else{
-					it++;
-					row2 = (*it)-'0';
-					it = find(line.begin(),line.end(),'C');
-					it++;
-					columns2 = (*it)-'0';	
-				}
+			auto it = find(line.begin(),line.end(),' ');
+			auto aux = it;
+			it++;
+			it = find(it,line.end(),' ');
+			if(it == line.end()){
+			    if(countF == 0){
+			        snum = "";
+			        auto beg = line.begin();
+			        while(beg != aux){
+			            snum+=*beg;
+			            beg++;
+			        }
+			        rows = std::stoi(snum);
+			        snum = "";
+			        while(aux != line.end()){
+			            snum += *aux;
+			            aux++;
+			        }
+			        columns = std::stoi(snum);
+			        countF++;
+
+			    }
+			    else{
+                    snum = "";
+                    auto beg = line.begin();
+                    while(beg != aux){
+                        snum+=*beg;
+                        beg++;
+                    }
+                    row2 = std::stoi(snum);
+                    snum = "";
+                    while(aux != line.end()){
+                        snum += *aux;
+                        aux++;
+                    }
+                    columns2 = std::stoi(snum);
+			    }
 			}
 			else{
-				it = find(line.begin(),line.end(),' ');
-				auto beg = line.begin();
-				snum = '\0';
-				while(beg != it){
-					snum += *beg;
-					beg++;
-				}
-				number = snum-'0';
-				numbers.push_back(number);
-				snum ='\0';
-				it++;
-				snum = *it;
-				number = (snum)-'0';
-				numbers.push_back(number);
+
+			    auto beg = line.begin();
+			    while(beg != line.end()){
+			        auto it3 = find(line.begin(),line.end(),' ');
+			        auto it2 = beg;
+                    snum = "";
+			        while(it2 != it3){
+			            snum += *it2;
+			            it2++;
+			        }
+			        beg++;
+			    }
+			    //number = std::stoi(snum);
+			    numbers.push_back(number);
 			}
 		}
 	}
@@ -81,23 +102,6 @@ void printMatrix(vector<vector<int>> matrix){
 	}
 }
 
-void principal(int rows, int row2, vector<vector<int>>matrix1, vector<vector<int>>matrix2,vector<vector<int>>&matrix3){
-	vector<thread> vt;
-	int sum = 0;
-	for(int i = 0; i < rows; i++) {
-        vt.push_back(thread([i,&sum,row2,matrix1,matrix2,&matrix3]() {
-            for (int r = 0; r < row2; r++) {
-                sum = 0;
-                for (int j = 0; j < row2; j++) {
-                    sum += matrix1[i][j] * matrix2[j][r];
-                }
-                matrix3[i][r] = sum;
-            }
-        }));
-    }
-	std::for_each(vt.begin(),vt.end(),[](thread & t){
-		t.join();
-	});
-}
+
 
 
